@@ -37,9 +37,7 @@ export const upcomingMissionsMiddleware = createMiddleware<AppEnv>(async (c, nex
 					mission.launch_site_id
 						? getSiteIfVisible(c, mission.launch_site_id)
 						: Promise.resolve(null),
-					mission.target_id
-						? getSiteIfVisible(c, mission.target_id)
-						: Promise.resolve(null),
+					mission.target_id ? getSiteIfVisible(c, mission.target_id) : Promise.resolve(null),
 				]);
 				const hero = pickHeroImage(mission, site, target, { googleEnabled });
 				return {

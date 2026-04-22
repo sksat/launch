@@ -87,7 +87,8 @@ missionRoutes.post("/", requireAuth, async (c) => {
 	// denorm when the site is `public`. For non-public sites the list
 	// renders "—" and the detail view resolves the name through
 	// getSiteIfVisible. Free-text entries (no FK) pass through as-is.
-	let launchSiteText: string | null = launchSiteId === null ? (body.launch_site as string) || null : null;
+	let launchSiteText: string | null =
+		launchSiteId === null ? (body.launch_site as string) || null : null;
 	if (launchSiteId !== null) {
 		const site = await getSiteIfVisible(c, launchSiteId);
 		if (!site) {
@@ -167,9 +168,7 @@ missionRoutes.get("/:mid", async (c) => {
 	const poll = await getPollForMission(c.env.DB, mission.id);
 	const user = c.var.user;
 	const aboard = user ? await isParticipant(c.env.DB, mission.id, user.id) : false;
-	const site = mission.launch_site_id
-		? await getSiteIfVisible(c, mission.launch_site_id)
-		: null;
+	const site = mission.launch_site_id ? await getSiteIfVisible(c, mission.launch_site_id) : null;
 	const target = mission.target_id ? await getSiteIfVisible(c, mission.target_id) : null;
 
 	return c.render(
@@ -218,7 +217,8 @@ missionRoutes.post("/:mid/edit", requireAuth, async (c) => {
 	if (launchSiteId !== null && !Number.isFinite(launchSiteId)) launchSiteId = null;
 	// See create route: denorm text only caches public site names; non-
 	// public ones render via visibility-checked resolution at view time.
-	let launchSiteText: string | null = launchSiteId === null ? (body.launch_site as string) || null : null;
+	let launchSiteText: string | null =
+		launchSiteId === null ? (body.launch_site as string) || null : null;
 	if (launchSiteId !== null) {
 		const site = await getSiteIfVisible(c, launchSiteId);
 		if (!site) {

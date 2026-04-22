@@ -2,6 +2,9 @@ import type { JSX } from "hono/jsx/jsx-runtime";
 import { jsxRenderer } from "hono/jsx-renderer";
 
 declare module "hono" {
+	// biome-ignore lint/style/useShorthandFunctionType: interface is required
+	// here because hono does declaration merging on `ContextRenderer` — a
+	// `type` alias would shadow instead of augmenting the upstream type.
 	interface ContextRenderer {
 		(content: JSX.Element, props?: { title?: string }): Response | Promise<Response>;
 	}

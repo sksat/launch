@@ -29,9 +29,7 @@ homeRoutes.get("/", async (c) => {
 	const featuredSite = featured?.launch_site_id
 		? await getSiteIfVisible(c, featured.launch_site_id)
 		: null;
-	const featuredTarget = featured?.target_id
-		? await getSiteIfVisible(c, featured.target_id)
-		: null;
+	const featuredTarget = featured?.target_id ? await getSiteIfVisible(c, featured.target_id) : null;
 
 	let friendActivity: { mission: import("../types").MissionRow; creator: UserRow }[] = [];
 	if (user) {

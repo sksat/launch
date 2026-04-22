@@ -54,8 +54,7 @@ export const MissionDetailPage: FC<{
 	// no FK is set (free-text entry) so hidden site names don't leak.
 	const launchSiteLabel =
 		site?.name ?? (mission.launch_site_id ? "—" : (mission.launch_site ?? "—"));
-	const targetLabel =
-		target?.name ?? (mission.target_id ? "—" : (mission.target_orbit ?? "—"));
+	const targetLabel = target?.name ?? (mission.target_id ? "—" : (mission.target_orbit ?? "—"));
 
 	return (
 		<div>
@@ -205,7 +204,11 @@ export const MissionDetailPage: FC<{
 							<summary class="font-bold text-[12px] uppercase tracking-[1.17px] text-launch-cyan cursor-pointer">
 								+ Create Schedule Poll
 							</summary>
-							<form method="post" action={`/missions/${mission.external_id}/poll`} class="mt-5 space-y-4">
+							<form
+								method="post"
+								action={`/missions/${mission.external_id}/poll`}
+								class="mt-5 space-y-4"
+							>
 								<div>
 									<label class="eyebrow block mb-2">Poll Title</label>
 									<input

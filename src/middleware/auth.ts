@@ -20,10 +20,7 @@ export const authMiddleware = createMiddleware<AppEnv>(async (c, next) => {
 		// Re-check allow-list on every request so removing a user from
 		// allowed-users.json is effective immediately instead of waiting
 		// for the 7-day session expiry.
-		if (
-			payload.e < Math.floor(Date.now() / 1000) ||
-			!isAllowedUser(payload.l)
-		) {
+		if (payload.e < Math.floor(Date.now() / 1000) || !isAllowedUser(payload.l)) {
 			deleteCookie(c, "session", { path: "/", secure: true });
 			c.set("user", null);
 		} else {

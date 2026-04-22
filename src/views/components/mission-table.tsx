@@ -50,7 +50,10 @@ export const MissionTable: FC<{
 				{missions.map((m) => (
 					<tr key={m.id} class="group">
 						<td class={cell}>
-							<a href={`/missions/${m.external_id}`} class="block group-hover:text-launch-cyan tx-btn">
+							<a
+								href={`/missions/${m.external_id}`}
+								class="block group-hover:text-launch-cyan tx-btn"
+							>
 								<div class="font-bold uppercase text-[15px] tracking-tight">
 									{missionDisplayName(m)}
 								</div>
