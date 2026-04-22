@@ -9,22 +9,26 @@ import type { AppEnv } from "../types";
  * use requireAuth for that.
  */
 export const authMiddleware = createMiddleware<AppEnv>(async (c, next) => {
-	const session = await getSignedCookie(c, c.env.SESSION_SECRET, "session");
-	if (!session) {
-		c.set("user", null);
-		await next();
-		return;
-	}
+	// Treat ANY failure during session decode (missing cookie header, HMAC
+	// mismatch, crypto throw from an empty/rotated SESSION_SECRET, bad JSON
+	// payload, stale exp, revoked allow-list entry) the same way: drop the
+	// cookie, continue as anonymous. This middleware runs globally, so a
+	// throw here would 500 every route for that browser.
 	try {
-		const payload = JSON.parse(session) as { u: number; l: string; e: number };
-		// Re-check allow-list on every request so removing a user from
-		// allowed-users.json is effective immediately instead of waiting
-		// for the 7-day session expiry.
-		if (payload.e < Math.floor(Date.now() / 1000) || !isAllowedUser(payload.l)) {
-			deleteCookie(c, "session", { path: "/", secure: true });
+		const session = await getSignedCookie(c, c.env.SESSION_SECRET, "session");
+		if (!session) {
 			c.set("user", null);
 		} else {
-			c.set("user", { id: payload.u, login: payload.l });
+			const payload = JSON.parse(session) as { u: number; l: string; e: number };
+			// Re-check allow-list on every request so removing a user from
+			// allowed-users.json is effective immediately instead of waiting
+			// for the 7-day session expiry.
+			if (payload.e < Math.floor(Date.now() / 1000) || !isAllowedUser(payload.l)) {
+				deleteCookie(c, "session", { path: "/", secure: true });
+				c.set("user", null);
+			} else {
+				c.set("user", { id: payload.u, login: payload.l });
+			}
 		}
 	} catch {
 		deleteCookie(c, "session", { path: "/", secure: true });

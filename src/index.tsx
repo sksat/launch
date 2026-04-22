@@ -25,4 +25,21 @@ app.route("/missions", pollRoutes);
 app.route("/sites", siteRoutes);
 app.route("/friends", friendsRoutes);
 
+// Global error handler: surface the real stack to `wrangler tail` / CF
+// Dashboard logs (there is no other observability path in prod) and render
+// a minimal 500 page in the same tone as the ACCESS DENIED view.
+app.onError((err, c) => {
+	const stack = err instanceof Error ? (err.stack ?? err.message) : String(err);
+	console.error(`[onError] ${c.req.method} ${c.req.url}\n${stack}`);
+	return c.html(
+		<div class="min-h-screen flex items-center justify-center">
+			<div class="text-center">
+				<h1 class="text-2xl font-bold text-launch-red mb-2">ABORT</h1>
+				<p class="text-space-500">Something exploded on the pad. Check telemetry.</p>
+			</div>
+		</div>,
+		500,
+	);
+});
+
 export default app;
