@@ -18,7 +18,7 @@
     "lint": "biome check src/",
     "lint:fix": "biome check --write src/",
     "test": "vitest run",
-    "test:e2e": "wrangler d1 migrations apply launch-db --local --persist-to .wrangler-e2e/state && playwright test"
+    "test:e2e": "node scripts/prep-e2e-env.mjs && wrangler d1 migrations apply launch-db --local --persist-to .wrangler-e2e/state && playwright test"
   },
   "dependencies": {
     "hono": "^4.12.14"
