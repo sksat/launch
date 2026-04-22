@@ -1,0 +1,16 @@
+GITHUB_CLIENT_SECRET=your_github_oauth_client_secret
+SESSION_SECRET=your_random_hex_string_32_bytes_minimum
+
+# Set to "true" to bypass OAuth with a user picker (dev / E2E only).
+MOCK_AUTH=true
+
+# Google Places API key (see CLAUDE.md "Google Maps API キー" section).
+#   empty        → Places integration disabled; auto-fetch button hidden,
+#                   /sites/:slug/photo returns 404
+#   "<real key>" → hits production Google Places (New) endpoint
+GOOGLE_MAPS_API_KEY=
+
+# Override Places API base URL for local mocks. Leave empty to hit real
+# Google. The E2E suite sets this to http://localhost:5181 automatically
+# via .dev.vars.e2e — you don't need to touch it for manual dev.
+GOOGLE_PLACES_BASE_URL=

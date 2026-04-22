@@ -1,0 +1,24 @@
+[
+	{
+		"slug": "tsukuba-bldg-a",
+		"name": "Tsukuba — Building A Parking Lot",
+		"description": "筑波側の定例集合地点。Rideshare mission (T-*) のデフォルト launch site。",
+		"visibility": "authenticated",
+		"image_source": "url",
+		"image_url": "/img/tsukuba-h2.jpg",
+		"latitude": 36.0783,
+		"longitude": 140.0776,
+		"address": "茨城県つくば市"
+	},
+	{
+		"slug": "ariake",
+		"name": "Ariake — Office",
+		"description": "有明オフィス。Rideshare mission の target orbit。",
+		"visibility": "authenticated",
+		"image_source": null,
+		"image_url": null,
+		"latitude": 35.6359,
+		"longitude": 139.7925,
+		"address": "東京都江東区有明"
+	}
+]

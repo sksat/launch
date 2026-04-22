@@ -1,0 +1,343 @@
+@import "tailwindcss";
+
+/* ============================================================
+   D-DIN — primary typeface.
+   Self-hosted, SIL Open Font License v1.1.
+   ============================================================ */
+@font-face {
+	font-family: "D-DIN";
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+	src: url("/fonts/D-DIN.woff2") format("woff2");
+}
+@font-face {
+	font-family: "D-DIN";
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+	src: url("/fonts/D-DIN-Bold.woff2") format("woff2");
+}
+@font-face {
+	font-family: "D-DIN";
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+	src: url("/fonts/D-DIN-Italic.woff2") format("woff2");
+}
+
+@theme {
+	/* design-spec palette */
+	--color-space-black: #000000; /* body bg, hero void */
+	--color-space-950: #050507;
+	--color-space-900: #0a0a0d;
+	--color-space-800: #16161b;
+	--color-space-700: #232329;
+	--color-space-600: #34343c;
+	--color-space-500: #595962;
+	--color-space-400: #8a8a93;
+	--color-space-300: #b4b4bc;
+	--color-space-200: #d6d6dc;
+	--color-space-100: #e8e8ec;
+	--color-space-white: rgb(240, 240, 250);
+
+	/* status accents (subdued palette) */
+	--color-launch-blue: #4287f5;
+	--color-launch-cyan: #56b4ff;
+	--color-launch-green: #00d47e;
+	--color-launch-amber: #f5a623;
+	--color-launch-red: #e53e3e;
+	--color-launch-ignition: #ff6b35;
+
+	/* D-DIN for everything; Roboto Mono for telemetry-style labels */
+	--font-sans: "D-DIN", "Arial", "Verdana", system-ui, sans-serif;
+	--font-display: "D-DIN", "Arial", "Verdana", system-ui, sans-serif;
+	--font-mono: "Roboto Mono", "JetBrains Mono", ui-monospace, monospace;
+}
+
+/* base body — pure black, lavender-white text */
+html {
+	background: #000;
+}
+
+body {
+	color: rgb(240, 240, 250);
+	font-family: "D-DIN", Arial, Verdana, sans-serif;
+	font-size: 16px;
+	line-height: 26px;
+}
+
+/* Headings: D-DIN-Bold face at weight 700.
+   Note: D-DIN-Bold renders narrower than the default face Bold weight. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "D-DIN", Arial, Verdana, sans-serif;
+	font-weight: 700;
+	letter-spacing: -0.5px; /* H1 uses -1px at 80px; scale with size */
+}
+
+/* "telemetry"-style label utility — nav and section headers */
+.eyebrow {
+	font-family: "D-DIN", Arial, Verdana, sans-serif;
+	font-weight: 700;
+	font-size: 11px;
+	line-height: 14px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	color: var(--color-space-400);
+}
+
+/* Section header — used for "COUNTDOWN", "PAYLOAD MANIFEST" etc */
+.section-head {
+	font-family: "D-DIN", Arial, Verdana, sans-serif;
+	font-weight: 700;
+	font-size: 32px;
+	line-height: 1;
+	letter-spacing: 0.5px;
+	text-transform: uppercase;
+}
+@media (min-width: 768px) {
+	.section-head {
+		font-size: 48px;
+		letter-spacing: 0.96px;
+	}
+}
+
+/* Mission name — H1 hero treatment, 80px / -1px LS */
+.hero-title {
+	font-family: "D-DIN", Arial, Verdana, sans-serif;
+	font-weight: 700;
+	text-transform: uppercase;
+	line-height: 0.95;
+	letter-spacing: -0.5px;
+}
+
+/* hairline divider */
+.hairline {
+	border: 0;
+	border-top: 1px solid rgba(240, 240, 250, 0.08);
+}
+
+/* subtle starfield (behind hero only) */
+.starfield {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+	background-image:
+		radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.45), transparent 50%),
+		radial-gradient(1px 1px at 73% 22%, rgba(255, 255, 255, 0.35), transparent 50%),
+		radial-gradient(1px 1px at 41% 41%, rgba(255, 255, 255, 0.3), transparent 50%),
+		radial-gradient(1px 1px at 88% 64%, rgba(255, 255, 255, 0.4), transparent 50%),
+		radial-gradient(1px 1px at 22% 71%, rgba(255, 255, 255, 0.35), transparent 50%),
+		radial-gradient(1px 1px at 56% 86%, rgba(255, 255, 255, 0.25), transparent 50%),
+		radial-gradient(1px 1px at 94% 12%, rgba(255, 255, 255, 0.3), transparent 50%),
+		radial-gradient(1px 1px at 7% 52%, rgba(255, 255, 255, 0.3), transparent 50%);
+	opacity: 0.55;
+}
+
+/* horizon glow used as hero baseline */
+.horizon {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	height: 1px;
+	background: linear-gradient(
+		90deg,
+		transparent,
+		rgba(86, 180, 255, 0.45) 30%,
+		rgba(86, 180, 255, 0.65) 50%,
+		rgba(86, 180, 255, 0.45) 70%,
+		transparent
+	);
+	box-shadow: 0 0 36px 4px rgba(86, 180, 255, 0.22);
+}
+
+/* tabular numerics for countdown digits */
+.tabular {
+	font-variant-numeric: tabular-nums;
+	font-feature-settings: "tnum";
+}
+
+/* ============================================================
+   Countdown digit reels — each digit is a 0..9 column that
+   slides via `top` so the active digit lands in a 1em window.
+     .cd-reel  { overflow: hidden; height: 1em }
+     .cd-track { position: absolute; transition: top 0.3s }
+   ============================================================ */
+.cd-reel {
+	display: inline-block;
+	height: 1em;
+	overflow: hidden;
+	vertical-align: top;
+	line-height: 1;
+}
+.cd-track {
+	display: block;
+	position: relative;
+	top: 0;
+	transition: top 0.3s;
+}
+.cd-digit {
+	display: block;
+	height: 1em;
+	line-height: 1;
+}
+
+/* ============================================================
+   Reveal animations — header / subheader / button slide-in on
+   load, paired with an easeOutExpo curve.
+   ============================================================ */
+@keyframes reveal-header {
+	0% {
+		opacity: 0;
+		transform: translateY(220%);
+	}
+	100% {
+		opacity: 1;
+		transform: none;
+	}
+}
+@keyframes reveal-subheader {
+	0% {
+		opacity: 0;
+		transform: translateY(80%);
+	}
+	100% {
+		opacity: 1;
+		transform: none;
+	}
+}
+@keyframes reveal-button {
+	0% {
+		opacity: 0;
+		transform: translateY(300%);
+	}
+	100% {
+		opacity: 1;
+		transform: none;
+	}
+}
+@keyframes fade-in {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+/* easeOutExpo — cubic-bezier(0.19, 1, 0.22, 1) */
+.reveal-header {
+	animation: reveal-header 1.2s cubic-bezier(0.19, 1, 0.22, 1) both;
+	overflow: clip; /* clip the slide-from-below to keep it contained */
+}
+.reveal-subheader {
+	animation: reveal-subheader 1s cubic-bezier(0.19, 1, 0.22, 1) 0.2s both;
+}
+.reveal-button {
+	animation: reveal-button 1s cubic-bezier(0.19, 1, 0.22, 1) 0.4s both;
+}
+.reveal-fade {
+	animation: fade-in 1.6s cubic-bezier(0.19, 1, 0.22, 1) 0.6s both;
+}
+
+/* Reveal-on-scroll: opacity 0 → 1 when entering viewport.
+   Toggled by IntersectionObserver in the inline script in renderer.tsx */
+.reveal-on-scroll {
+	opacity: 0;
+	transform: translateY(20px);
+	transition:
+		opacity 0.8s cubic-bezier(0.19, 1, 0.22, 1),
+		transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.reveal-on-scroll.in-view {
+	opacity: 1;
+	transform: translateY(0);
+}
+
+/* Button transitions: 0.5s easeOutExpo on bg/color/border */
+.tx-btn {
+	transition:
+		background-color 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+		color 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+		border-color 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+/* ============================================================
+   Mega menu — drops from below the top bar with easeOutExpo.
+   Closed: translateY(-100%) + opacity 0; Open: identity.
+   ============================================================ */
+.mega-menu {
+	transform: translateY(-100%);
+	opacity: 0;
+	pointer-events: none;
+	transition:
+		transform 0.5s cubic-bezier(0.19, 1, 0.22, 1),
+		opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+.mega-menu.open {
+	transform: translateY(0);
+	opacity: 1;
+	pointer-events: auto;
+}
+
+/* Hamburger ↔ X morph: only one icon visible at a time. */
+#site-header .menu-icon {
+	position: relative;
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+}
+#site-header .menu-icon-bars,
+#site-header .menu-icon-close {
+	position: absolute;
+	inset: 0;
+	transition: opacity 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+}
+#site-header .menu-icon-close {
+	opacity: 0;
+}
+#site-header.menu-open .menu-icon-bars {
+	opacity: 0;
+}
+#site-header.menu-open .menu-icon-close {
+	opacity: 1;
+}
+
+/* Lock background scroll while the mega menu is open. */
+html.menu-locked,
+html.menu-locked body {
+	overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.reveal-header,
+	.reveal-subheader,
+	.reveal-button,
+	.reveal-fade {
+		animation: none;
+	}
+	.reveal-on-scroll {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}
+
+/* Visit mission template: launch site is meaningless ("ZEYO 行くぞ" — depart
+   from anywhere). Hide the field declaratively via :has() so SSR-only forms
+   stay reactive to template radio changes without JS. The data-template
+   attribute covers the edit page where no radio is rendered. */
+.mission-form[data-template="visit"] .mission-form-launch-site,
+.mission-form:has(input[name="template_id"][value="visit"]:checked) .mission-form-launch-site {
+	display: none;
+}
+.mission-form[data-template="visit"] .mission-form-sitegrid,
+.mission-form:has(input[name="template_id"][value="visit"]:checked) .mission-form-sitegrid {
+	grid-template-columns: 1fr;
+}

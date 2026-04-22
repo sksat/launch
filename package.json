@@ -1,0 +1,40 @@
+{
+  "name": "launch",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && vite build --ssr",
+    "preview": "$npm_execpath run build && wrangler dev dist-server/index.js",
+    "deploy": "$npm_execpath run build && wrangler deploy dist-server/index.js",
+    "db:migrate:local": "wrangler d1 migrations apply launch-db --local",
+    "db:migrate:remote": "wrangler d1 migrations apply launch-db --remote",
+    "sites:sync": "node scripts/sync-sites.mjs",
+    "sites:sync:remote": "node scripts/sync-sites.mjs --remote",
+    "places:smoke": "node scripts/places-smoke.mjs",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings",
+    "typecheck": "tsc --noEmit",
+    "lint": "biome check src/",
+    "lint:fix": "biome check --write src/",
+    "test": "vitest run",
+    "test:e2e": "wrangler d1 migrations apply launch-db --local --persist-to .wrangler-e2e/state && playwright test"
+  },
+  "dependencies": {
+    "hono": "^4.12.14"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.4.12",
+    "@cloudflare/vite-plugin": "^1.32.3",
+    "@cloudflare/workers-types": "^4.20260417.1",
+    "@hono/vite-build": "^1.11.1",
+    "@playwright/test": "1.59.1",
+    "@tailwindcss/vite": "^4.2.2",
+    "playwright": "^1.59.1",
+    "tailwindcss": "^4.2.2",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.8",
+    "vite-plugin-ssr-hot-reload": "^0.5.0",
+    "vitest": "^4.1.4",
+    "wrangler": "^4.83.0"
+  }
+}

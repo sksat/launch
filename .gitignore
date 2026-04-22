@@ -1,0 +1,24 @@
+node_modules/
+dist/
+dist-server/
+.wrangler/
+.dev.vars*
+!.dev.vars.example
+.env
+*.log
+.DS_Store
+
+# E2E scratch
+.e2e-mock.pid
+.wrangler-e2e/
+tests/e2e/_debug-*
+test-results/
+playwright-report/
+
+# Local-only design inspection scripts
+scripts/inspect-*.mjs
+
+# Claude Code local state (hooks/skills stay committed)
+.claude/settings.json
+.claude/settings.local.json
+.claude/scheduled_tasks.lock

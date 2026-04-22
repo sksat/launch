@@ -1,0 +1,72 @@
+{
+  "templates": [
+    {
+      "id": "rideshare",
+      "code": "T",
+      "name": "Rideshare",
+      "description": "Carpool mission to the office",
+      "callsign_pattern": "T-{hour}",
+      "fields": {
+        "launch_site": { "label": "Launch Site", "placeholder": "Tsukuba", "required": true },
+        "target_orbit": { "label": "Target Orbit", "placeholder": "Ariake", "required": true },
+        "vehicle": { "label": "Vehicle", "placeholder": "Car model", "required": false }
+      },
+      "default_visibility": "authenticated",
+      "default_roles": {
+        "creator": "commander",
+        "participant": "crew"
+      }
+    },
+    {
+      "id": "refueling",
+      "code": "L",
+      "name": "Refueling",
+      "description": "Lunch / food mission",
+      "callsign_pattern": "L-{hour}",
+      "fields": {
+        "launch_site": { "label": "Meeting Point", "placeholder": "Office lobby", "required": true },
+        "target_orbit": { "label": "Restaurant", "placeholder": "Restaurant name", "required": true },
+        "vehicle": { "label": "Transport", "placeholder": "Walk / Car / etc.", "required": false }
+      },
+      "default_visibility": "authenticated",
+      "default_roles": {
+        "creator": "commander",
+        "participant": "crew"
+      }
+    },
+    {
+      "id": "special",
+      "code": "SPEC",
+      "name": "Special",
+      "description": "Special mission",
+      "callsign_pattern": "SPEC-{seq}",
+      "fields": {
+        "launch_site": { "label": "Location", "placeholder": "Location", "required": false },
+        "target_orbit": { "label": "Destination", "placeholder": "Destination", "required": false },
+        "vehicle": { "label": "Vehicle", "placeholder": "Vehicle / transport", "required": false }
+      },
+      "default_visibility": "public",
+      "default_roles": {
+        "creator": "commander",
+        "participant": "crew"
+      }
+    },
+    {
+      "id": "visit",
+      "code": "V",
+      "name": "Visit",
+      "description": "Casual outing — destination only, launch site doesn't matter",
+      "callsign_pattern": "V-{seq}",
+      "fields": {
+        "launch_site": { "label": "Launch Site", "placeholder": "(omit)", "required": false },
+        "target_orbit": { "label": "Target", "placeholder": "ZEYO", "required": true },
+        "vehicle": { "label": "Vehicle", "placeholder": "Walk / Car / etc.", "required": false }
+      },
+      "default_visibility": "authenticated",
+      "default_roles": {
+        "creator": "commander",
+        "participant": "crew"
+      }
+    }
+  ]
+}

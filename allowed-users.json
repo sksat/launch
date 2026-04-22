@@ -1,0 +1,14 @@
+{
+  "users": [
+    {
+      "github": "sksat",
+      "name": "sksat",
+      "role": "admin"
+    },
+    {
+      "github": "pepepper",
+      "name": "pepepper",
+      "role": "member"
+    }
+  ]
+}
