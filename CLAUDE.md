@@ -65,7 +65,7 @@ pnpm db:migrate:local    # 新規 migration 作ったあと
 pnpm run deploy          # 本番デプロイ (CI が main push で自動実行)
 ```
 
-ローカル DB を seed したいときは `pnpm wrangler d1 execute launch-db --local --file=migrations/_seed_dev.sql`。`_seed_dev.sql` は `_` プレフィックスなので migration として扱われない手動投入用。
+ローカル DB を seed したいときは `pnpm db:seed:local`。`_seed_dev.sql` は `_` プレフィックスなので migration として扱われない手動投入用で、npm script は `--local` をベイクインしてあるので `--remote` 誤爆を防ぐ (prod に seed 行を残して UNIQUE 衝突を起こした過去事例対策)。
 
 ## 触る前に読むべきファイル
 

@@ -10,6 +10,7 @@
     "deploy": "$npm_execpath run build && wrangler deploy dist-server/index.js",
     "db:migrate:local": "wrangler d1 migrations apply launch-db --local",
     "db:migrate:remote": "wrangler d1 migrations apply launch-db --remote",
+    "db:seed:local": "wrangler d1 execute launch-db --local --file=migrations/_seed_dev.sql",
     "sites:sync": "node scripts/sync-sites.mjs",
     "sites:sync:remote": "node scripts/sync-sites.mjs --remote",
     "places:smoke": "node scripts/places-smoke.mjs",
