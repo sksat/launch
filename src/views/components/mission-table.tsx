@@ -1,11 +1,12 @@
 import type { FC } from "hono/jsx";
+import { parseJstAware } from "../../lib/datetime";
 import { getTemplate } from "../../lib/templates";
 import type { MissionRow } from "../../types";
 import { StatusBadge } from "./status-badge";
 
 function formatDate(iso: string | null): string {
 	if (!iso) return "TBD";
-	const d = new Date(iso);
+	const d = parseJstAware(iso);
 	const dt = d.toLocaleDateString("en-US", {
 		year: "numeric",
 		month: "long",

@@ -1,4 +1,5 @@
 import type { FC } from "hono/jsx";
+import { parseJstAware } from "../../lib/datetime";
 import { pickHeroImage } from "../../lib/hero-image";
 import type { MissionRow, SessionUser, SiteRow, UserRow } from "../../types";
 import { Footer } from "../components/footer";
@@ -20,15 +21,15 @@ export const HomePage: FC<{
 	friendActivity?: { mission: MissionRow; creator: UserRow }[];
 }> = ({ missions, featuredSite, featuredTarget, user, googleEnabled, friendActivity = [] }) => {
 	const upcoming = missions.filter(isUpcoming).sort((a, b) => {
-		const at = a.scheduled_at ? new Date(a.scheduled_at).getTime() : Infinity;
-		const bt = b.scheduled_at ? new Date(b.scheduled_at).getTime() : Infinity;
+		const at = a.scheduled_at ? parseJstAware(a.scheduled_at).getTime() : Infinity;
+		const bt = b.scheduled_at ? parseJstAware(b.scheduled_at).getTime() : Infinity;
 		return at - bt;
 	});
 	const past = missions
 		.filter((m) => !isUpcoming(m))
 		.sort((a, b) => {
-			const at = a.scheduled_at ? new Date(a.scheduled_at).getTime() : 0;
-			const bt = b.scheduled_at ? new Date(b.scheduled_at).getTime() : 0;
+			const at = a.scheduled_at ? parseJstAware(a.scheduled_at).getTime() : 0;
+			const bt = b.scheduled_at ? parseJstAware(b.scheduled_at).getTime() : 0;
 			return bt - at;
 		});
 

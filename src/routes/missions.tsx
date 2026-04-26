@@ -11,6 +11,7 @@ import { abortMission, boardMission, getCrewForMission, isParticipant } from "..
 import { getPollForMission } from "../db/polls";
 import { listSites } from "../db/sites";
 import { jstHourOf, jstIsoFromFormInput } from "../lib/datetime";
+import { buildMissionOgp } from "../lib/ogp";
 import { generateCallsign, getAllTemplates, getTemplate } from "../lib/templates";
 import { requireAuth } from "../middleware/auth";
 import { checkVisibility, getSiteIfVisible } from "../middleware/visibility";
@@ -171,6 +172,20 @@ missionRoutes.get("/:mid", async (c) => {
 	const site = mission.launch_site_id ? await getSiteIfVisible(c, mission.launch_site_id) : null;
 	const target = mission.target_id ? await getSiteIfVisible(c, mission.target_id) : null;
 
+	const template = getTemplate(mission.template_id);
+	const templateName = template?.name ?? mission.template_id;
+	const origin = new URL(c.req.url).origin;
+	const og = buildMissionOgp(mission, site, target, {
+		origin,
+		googleEnabled: !!c.env.GOOGLE_MAPS_API_KEY,
+		templateName,
+	});
+	// Only feed the page <title> for public missions — non-public titles
+	// must not appear in the browser tab either.
+	const titleBody = mission.title.trim() || templateName;
+	const pageTitle =
+		mission.visibility === "public" ? `${mission.callsign} ${titleBody}`.trim() : undefined;
+
 	return c.render(
 		<MissionDetailPage
 			mission={mission}
@@ -182,6 +197,7 @@ missionRoutes.get("/:mid", async (c) => {
 			aboard={aboard}
 			googleEnabled={!!c.env.GOOGLE_MAPS_API_KEY}
 		/>,
+		{ title: pageTitle, og },
 	);
 });
 

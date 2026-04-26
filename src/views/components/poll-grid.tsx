@@ -1,11 +1,12 @@
 import type { FC } from "hono/jsx";
 import type { PollWithOptions } from "../../db/polls";
+import { parseJstAware } from "../../lib/datetime";
 import type { SessionUser } from "../../types";
 
 function formatSlot(iso: string): string {
 	// The app renders all times in JST (CLAUDE.md); without the timezone
 	// pin, Workers (UTC runtime) would show poll slots 9h off.
-	const d = new Date(iso);
+	const d = parseJstAware(iso);
 	const date = d.toLocaleDateString("en-US", {
 		month: "short",
 		day: "numeric",

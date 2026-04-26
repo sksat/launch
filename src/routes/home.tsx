@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { acceptedFriendIdsOf } from "../db/friendships";
 import { listMissions, listMissionsByCreators } from "../db/missions";
 import { getUsersByIds } from "../db/users";
+import { parseJstAware } from "../lib/datetime";
 import { getSiteIfVisible } from "../middleware/visibility";
 import type { AppEnv, UserRow } from "../types";
 import { HomePage } from "../views/pages/home";
@@ -22,8 +23,12 @@ homeRoutes.get("/", async (c) => {
 	const featured = missions
 		.filter((m) => !["completed", "scrubbed"].includes(m.status))
 		.sort((a, b) => {
-			const at = a.scheduled_at ? new Date(a.scheduled_at).getTime() : Number.POSITIVE_INFINITY;
-			const bt = b.scheduled_at ? new Date(b.scheduled_at).getTime() : Number.POSITIVE_INFINITY;
+			const at = a.scheduled_at
+				? parseJstAware(a.scheduled_at).getTime()
+				: Number.POSITIVE_INFINITY;
+			const bt = b.scheduled_at
+				? parseJstAware(b.scheduled_at).getTime()
+				: Number.POSITIVE_INFINITY;
 			return at - bt;
 		})[0];
 	const featuredSite = featured?.launch_site_id

@@ -1,24 +1,47 @@
 import type { JSX } from "hono/jsx/jsx-runtime";
 import { jsxRenderer } from "hono/jsx-renderer";
+import type { OgpData } from "./lib/ogp";
 
 declare module "hono" {
-	// biome-ignore lint/style/useShorthandFunctionType: interface is required
-	// here because hono does declaration merging on `ContextRenderer` — a
-	// `type` alias would shadow instead of augmenting the upstream type.
+	// hono uses declaration merging on `ContextRenderer`; a `type` alias
+	// would shadow instead of augmenting the upstream type, so an interface
+	// with a call signature is required here.
+	// biome-ignore lint/style/useShorthandFunctionType: declaration merging requires interface
 	interface ContextRenderer {
-		(content: JSX.Element, props?: { title?: string }): Response | Promise<Response>;
+		(content: JSX.Element, props?: { title?: string; og?: OgpData }): Response | Promise<Response>;
 	}
 }
 
 const GA_MEASUREMENT_ID = "G-D0YC7Q83RP";
 
-export const renderer = jsxRenderer(({ children, title }) => {
+export const renderer = jsxRenderer(({ children, title, og }) => {
 	return (
 		<html lang="en" class="bg-space-black text-space-white">
 			<head>
 				<meta charset="UTF-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 				<title>{title ? `${title} | launch.sksat.dev` : "launch.sksat.dev"}</title>
+				{/* OGP / Twitter Card meta tags. Only emitted when the route
+				    explicitly opted in by passing `og` — the helper in
+				    `src/lib/ogp.ts` is responsible for sanitizing private
+				    mission/site fields into a generic site-level OGP so
+				    nothing leaks via unfurls. */}
+				{og && (
+					<>
+						<link rel="canonical" href={og.url} />
+						<meta property="og:site_name" content="launch.sksat.dev" />
+						<meta property="og:title" content={og.title} />
+						<meta property="og:description" content={og.description} />
+						<meta property="og:type" content={og.type} />
+						<meta property="og:url" content={og.url} />
+						<meta property="og:image" content={og.image} />
+						<meta property="og:image:alt" content={og.imageAlt} />
+						<meta name="twitter:card" content={og.twitterCard} />
+						<meta name="twitter:title" content={og.title} />
+						<meta name="twitter:description" content={og.description} />
+						<meta name="twitter:image" content={og.image} />
+					</>
+				)}
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 				{/* Roboto Mono — telemetry/label face.

@@ -1,4 +1,5 @@
 import type { FC } from "hono/jsx";
+import { parseJstAware } from "../../lib/datetime";
 import type { HeroImage } from "../../lib/hero-image";
 import type { MissionRow } from "../../types";
 
@@ -26,7 +27,7 @@ const HeroCountdown: FC<{ scheduledAt: string | null }> = ({ scheduledAt }) => {
 		return <div class={baseClass}>T -:--:--:--</div>;
 	}
 
-	const target = new Date(scheduledAt).getTime();
+	const target = parseJstAware(scheduledAt).getTime();
 	const diff = target - Date.now();
 	const past = diff < 0;
 	const abs = Math.abs(diff);
