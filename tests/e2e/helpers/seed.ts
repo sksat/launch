@@ -2,6 +2,7 @@ import type { Page, APIRequestContext } from "@playwright/test";
 import { expect } from "@playwright/test";
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
+import { generateShortId } from "../../../src/lib/short-id";
 
 const REPO_ROOT = resolve(import.meta.dirname, "../../..");
 
@@ -86,56 +87,18 @@ export async function seedRefuelingMission(
 		.locator('input[name="target_orbit"]')
 		.fill(opts.targetOrbit ?? "Restaurant");
 	await page.getByRole("button", { name: "Create Mission" }).click();
-	await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
+	await expect(page).toHaveURL(/\/missions\/[0-9A-Za-z]{8}$/);
 }
 
 /**
- * Seed a mission whose launch_site is a google_places-sourced "ZEYO".
- * Uses direct SQL seeding (faster + deterministic). The mock Places
- * server returns the fixture JPEG for `places/ChIJmockPlace/photos/mockPhoto`,
- * which is what the /sites/:slug/photo proxy will fetch when this mission's
- * hero is rendered.
- */
-export async function seedZeyoMission(
-	page: Page,
-	opts: { siteSlug?: string; missionTitle?: string } = {},
-): Promise<{ siteSlug: string; missionId: number }> {
-	const uid = await pepepperId();
-	const siteSlug = opts.siteSlug ?? `zeyo-${Date.now().toString(36)}`;
-	const missionTitle = opts.missionTitle ?? "ZEYO Curry Udon Run";
-
-	wranglerExec(
-		`INSERT INTO sites (slug, name, visibility, image_source, google_place_id, google_photo_name, google_attribution, created_by)
-		 VALUES ('${siteSlug}', 'カレーうどん ZEYO.', 'authenticated', 'google_places', 'ChIJmockPlace', 'places/ChIJmockPlace/photos/mockPhoto', 'Mock Photographer', ${uid})`,
-	);
-
-	await page.goto("/missions/new");
-	await page
-		.locator('input[name="template_id"][value="refueling"]')
-		.check({ force: true });
-	const future = new Date();
-	future.setDate(future.getDate() + 1);
-	future.setHours(12, 0, 0, 0);
-	await page.locator('input[name="title"]').fill(missionTitle);
-	await page
-		.locator('input[name="scheduled_at"]')
-		.fill(future.toISOString().slice(0, 16));
-	await page
-		.locator('select[name="launch_site_id"]')
-		.selectOption({ label: "カレーうどん ZEYO." });
-	await page.locator('input[name="target_orbit"]').fill("ZEYO");
-	await page.getByRole("button", { name: "Create Mission" }).click();
-	await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
-	const url = page.url();
-	const missionId = Number(url.match(/\/missions\/(\d+)$/)![1]);
-	return { siteSlug, missionId };
-}
-
-/**
- * Faster variant: seeds BOTH the site and mission via direct SQL (no UI
- * form submission). Use in tests that don't need to exercise the form
- * flow — e.g. hero-fold which only asserts rendering once the mission
- * exists. Login as the target user first so their record exists.
+ * Seeds BOTH the site and mission via direct SQL (no UI form submission).
+ * Use in tests that don't need to exercise the form flow — e.g. hero-fold
+ * which only asserts rendering once the mission exists. Login as the
+ * target user first so their record exists.
+ *
+ * The mock Places server returns the fixture JPEG for
+ * `places/ChIJmockPlace/photos/mockPhoto`, which is what the
+ * /sites/:slug/photo proxy will fetch when this mission's hero renders.
  */
 export async function seedZeyoMissionSQL(opts: {
 	userLogin?: string;
@@ -157,8 +120,8 @@ export async function seedZeyoMissionSQL(opts: {
 	// helper never collides with an `L-12` created by an earlier test going
 	// through the UI. The external_id is the primary identity; callsign/seq
 	// are just there to satisfy the UNIQUE constraint.
-	const seedExternalId = crypto.randomUUID();
-	const seedCallsign = `ZEYOTEST-${seedExternalId.slice(0, 8)}`;
+	const seedExternalId = generateShortId();
+	const seedCallsign = `ZEYOTEST-${seedExternalId}`;
 	wranglerExec(
 		`INSERT INTO sites (slug, name, visibility, image_source, google_place_id, google_photo_name, google_attribution, created_by)
 		 VALUES ('${siteSlug}', 'カレーうどん ZEYO.', 'authenticated', 'google_places', 'ChIJmockPlace', 'places/ChIJmockPlace/photos/mockPhoto', 'Mock Photographer', ${uid})

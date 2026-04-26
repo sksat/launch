@@ -49,7 +49,7 @@ test("home hero: T-, callsign, title, and CTA share one left edge", async ({
 	await page.locator('input[name="scheduled_at"]').fill(iso);
 	await page.locator('input[name="target_orbit"]').fill("Ramen Shop");
 	await page.getByRole("button", { name: "Create Mission" }).click();
-	await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
+	await expect(page).toHaveURL(/\/missions\/[0-9A-Za-z]{8}$/);
 
 	// Navigate to home where the featured mission (whichever one ends up
 	// first) renders in the MissionHero with a "View Mission" CTA. The

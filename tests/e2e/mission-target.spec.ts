@@ -37,7 +37,7 @@ test("Visit mission: launch site omitted, target uses unified sites registry", a
 		.selectOption({ label: name });
 
 	await page.getByRole("button", { name: "Create Mission" }).click();
-	await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
+	await expect(page).toHaveURL(/\/missions\/[0-9A-Za-z]{8}$/);
 
 	// Mission detail shows the target name, linked into the unified site
 	// registry.
@@ -80,7 +80,7 @@ test("Visit mission hero uses the target site's image when launch site is absent
 		.locator('select[name="target_id"]')
 		.selectOption({ label: `Visual ${slug}` });
 	await page.getByRole("button", { name: "Create Mission" }).click();
-	await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
+	await expect(page).toHaveURL(/\/missions\/[0-9A-Za-z]{8}$/);
 
 	// The first <img> on the page is the mission hero. With no launch site
 	// to draw from, pickHeroImage should fall back to the target site's

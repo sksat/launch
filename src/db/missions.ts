@@ -1,5 +1,20 @@
+import { generateShortId } from "../lib/short-id";
 import { visibilityFilter } from "../middleware/visibility";
 import type { MissionRow } from "../types";
+
+const MAX_INSERT_RETRIES = 5;
+
+// D1 surfaces SQLite UNIQUE violations as `Error` whose message contains
+// "UNIQUE constraint failed: <table>.<col>". We only want to retry when
+// the conflict is on `external_id` (= short-id collision); a callsign+seq
+// collision is a real logic race that another random ID can't resolve, so
+// it must propagate.
+// Exported so an integration test can pin the assumed D1 error format —
+// see tests/db/missions-d1-collision.test.ts.
+export function isExternalIdCollision(e: unknown): boolean {
+	if (!(e instanceof Error)) return false;
+	return /UNIQUE constraint failed:\s*missions\.external_id\b/.test(e.message);
+}
 
 export async function createMission(
 	db: D1Database,
@@ -18,45 +33,56 @@ export async function createMission(
 		created_by: number;
 	},
 ): Promise<MissionRow> {
-	// Opaque URL id (UUID v4). Kept distinct from the INTEGER PK so URLs
-	// don't leak a sequential counter and don't imply callsign is a
-	// hierarchical namespace.
-	const external_id = crypto.randomUUID();
-
+	// Opaque URL id: 8-char base62 random slug. Kept distinct from the
+	// INTEGER PK so URLs don't leak a sequential counter, and bounded retry
+	// papers over the rare collision in the 62^8 ≈ 2.18×10^14 space.
+	//
 	// seq is derived as `MAX(seq) + 1` per callsign *inline* with the
 	// INSERT so two concurrent creates against the same callsign can't
 	// both observe the same max and then race on UNIQUE(callsign, seq).
 	// D1 serializes writes, which makes the subquery + insert atomic
 	// from the app's perspective.
-	const result = await db
-		.prepare(
-			`INSERT INTO missions (external_id, template_id, callsign, seq, title, description, visibility, scheduled_at, launch_site, launch_site_id, target_orbit, target_id, vehicle, created_by)
-			 VALUES (
-			   ?, ?, ?,
-			   (SELECT COALESCE(MAX(seq), 0) + 1 FROM missions WHERE callsign = ?),
-			   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
-			 )
-			 RETURNING *`,
-		)
-		.bind(
-			external_id,
-			data.template_id,
-			data.callsign,
-			data.callsign,
-			data.title,
-			data.description,
-			data.visibility,
-			data.scheduled_at,
-			data.launch_site,
-			data.launch_site_id,
-			data.target_orbit,
-			data.target_id,
-			data.vehicle,
-			data.created_by,
-		)
-		.first();
-
-	return result as unknown as MissionRow;
+	for (let attempt = 0; attempt < MAX_INSERT_RETRIES; attempt++) {
+		const external_id = generateShortId();
+		try {
+			const result = await db
+				.prepare(
+					`INSERT INTO missions (external_id, template_id, callsign, seq, title, description, visibility, scheduled_at, launch_site, launch_site_id, target_orbit, target_id, vehicle, created_by)
+					 VALUES (
+					   ?, ?, ?,
+					   (SELECT COALESCE(MAX(seq), 0) + 1 FROM missions WHERE callsign = ?),
+					   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+					 )
+					 RETURNING *`,
+				)
+				.bind(
+					external_id,
+					data.template_id,
+					data.callsign,
+					data.callsign,
+					data.title,
+					data.description,
+					data.visibility,
+					data.scheduled_at,
+					data.launch_site,
+					data.launch_site_id,
+					data.target_orbit,
+					data.target_id,
+					data.vehicle,
+					data.created_by,
+				)
+				.first();
+			return result as unknown as MissionRow;
+		} catch (e: unknown) {
+			if (isExternalIdCollision(e) && attempt < MAX_INSERT_RETRIES - 1) {
+				continue;
+			}
+			throw e;
+		}
+	}
+	throw new Error(
+		`createMission: failed to allocate unique external_id after ${MAX_INSERT_RETRIES} attempts`,
+	);
 }
 
 export async function getMission(db: D1Database, id: number): Promise<MissionRow | null> {
