@@ -9,7 +9,9 @@ const MAX_INSERT_RETRIES = 5;
 // the conflict is on `external_id` (= short-id collision); a callsign+seq
 // collision is a real logic race that another random ID can't resolve, so
 // it must propagate.
-function isExternalIdCollision(e: unknown): boolean {
+// Exported so an integration test can pin the assumed D1 error format —
+// see tests/db/missions-d1-collision.test.ts.
+export function isExternalIdCollision(e: unknown): boolean {
 	if (!(e instanceof Error)) return false;
 	return /UNIQUE constraint failed:\s*missions\.external_id\b/.test(e.message);
 }
