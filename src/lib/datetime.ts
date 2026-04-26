@@ -13,12 +13,27 @@ export function jstIsoFromFormInput(raw: string | null | undefined): string | nu
 }
 
 /**
+ * Parse a stored timestamp into a Date, treating offset-less values as
+ * JST wall-clock time. The form pipeline (`jstIsoFromFormInput`) always
+ * produces `+09:00`-suffixed strings, but seed data and legacy rows can
+ * land in D1 as `YYYY-MM-DD HH:MM:SS` with no offset, which `new Date`
+ * would otherwise interpret in the worker's local TZ (UTC on
+ * Cloudflare). Anchoring to JST keeps display/format paths consistent
+ * with how the value was authored.
+ */
+export function parseJstAware(iso: string): Date {
+	if (/[Zz]$|[+-]\d\d:?\d\d$/.test(iso)) return new Date(iso);
+	const withT = iso.includes("T") ? iso : iso.replace(" ", "T");
+	return new Date(`${withT}+09:00`);
+}
+
+/**
  * Hour component of an ISO timestamp in JST. Used for hour-based
  * callsign patterns (T-{hour}, L-{hour}, V-{hour}).
  */
 export function jstHourOf(iso: string): number {
 	return Number(
-		new Date(iso).toLocaleString("en-US", {
+		parseJstAware(iso).toLocaleString("en-US", {
 			hour: "numeric",
 			hour12: false,
 			timeZone: "Asia/Tokyo",
@@ -35,7 +50,7 @@ export function jstHourOf(iso: string): number {
 export function isoToJstDatetimeLocal(iso: string | null | undefined): string {
 	if (!iso) return "";
 	// "YYYY-MM-DD HH:MM:SS" → "YYYY-MM-DDTHH:MM"
-	return new Date(iso)
+	return parseJstAware(iso)
 		.toLocaleString("sv-SE", { timeZone: "Asia/Tokyo", hour12: false })
 		.replace(" ", "T")
 		.slice(0, 16);

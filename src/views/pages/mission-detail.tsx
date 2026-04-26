@@ -1,6 +1,7 @@
 import type { FC } from "hono/jsx";
 import type { ParticipantWithUser } from "../../db/participants";
 import type { PollWithOptions } from "../../db/polls";
+import { parseJstAware } from "../../lib/datetime";
 import { pickHeroImage } from "../../lib/hero-image";
 import { getTemplate } from "../../lib/templates";
 import type { MissionRow, SessionUser, SiteRow } from "../../types";
@@ -13,7 +14,7 @@ import { PollGrid } from "../components/poll-grid";
 
 function formatLaunchDate(iso: string | null): { date: string; time: string } {
 	if (!iso) return { date: "TBD", time: "—" };
-	const d = new Date(iso);
+	const d = parseJstAware(iso);
 	const date = d
 		.toLocaleDateString("en-US", {
 			weekday: "long",

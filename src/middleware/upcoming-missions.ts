@@ -1,5 +1,6 @@
 import { createMiddleware } from "hono/factory";
 import { listMissions } from "../db/missions";
+import { parseJstAware } from "../lib/datetime";
 import { pickHeroImage } from "../lib/hero-image";
 import type { AppEnv, MissionRow, UpcomingMissionEntry } from "../types";
 import { getSiteIfVisible } from "./visibility";
@@ -24,8 +25,12 @@ export const upcomingMissionsMiddleware = createMiddleware<AppEnv>(async (c, nex
 		const upcoming = missions
 			.filter(isUpcoming)
 			.sort((a, b) => {
-				const at = a.scheduled_at ? new Date(a.scheduled_at).getTime() : Number.POSITIVE_INFINITY;
-				const bt = b.scheduled_at ? new Date(b.scheduled_at).getTime() : Number.POSITIVE_INFINITY;
+				const at = a.scheduled_at
+					? parseJstAware(a.scheduled_at).getTime()
+					: Number.POSITIVE_INFINITY;
+				const bt = b.scheduled_at
+					? parseJstAware(b.scheduled_at).getTime()
+					: Number.POSITIVE_INFINITY;
 				return at - bt;
 			})
 			.slice(0, HEADER_FEATURED_LIMIT);

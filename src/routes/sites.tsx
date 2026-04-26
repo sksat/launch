@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { createSite, deleteSite, getSiteBySlug, listSites, updateSite } from "../db/sites";
 import { buildPhotoMediaUrl, findPlaceForSite } from "../lib/google-places";
+import { buildSiteOgp } from "../lib/ogp";
 import { slugify } from "../lib/slug";
 import { requireAuth } from "../middleware/auth";
 import { checkSiteVisibility } from "../middleware/visibility";
@@ -142,8 +143,13 @@ siteRoutes.get("/:slug", async (c) => {
 	const denied = await checkSiteVisibility(c, site);
 	if (denied) return denied;
 
+	const origin = new URL(c.req.url).origin;
+	const og = buildSiteOgp(site, { origin, googleEnabled: googleEnabled(c.env) });
+	const pageTitle = site.visibility === "public" ? site.name : undefined;
+
 	return c.render(
 		<SiteDetailPage site={site} user={c.var.user} googleEnabled={googleEnabled(c.env)} />,
+		{ title: pageTitle, og },
 	);
 });
 

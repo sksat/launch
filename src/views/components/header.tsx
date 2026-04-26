@@ -1,12 +1,13 @@
 import type { FC } from "hono/jsx";
 import { useRequestContext } from "hono/jsx-renderer";
+import { parseJstAware } from "../../lib/datetime";
 import type { AppEnv, MissionRow, SessionUser, UpcomingMissionEntry } from "../../types";
 
 const HEADER_HEIGHT = 74;
 
 function formatLaunchDateJST(iso: string | null): string {
 	if (!iso) return "T-?";
-	const d = new Date(iso);
+	const d = parseJstAware(iso);
 	const date = d.toLocaleDateString("en-US", {
 		month: "long",
 		day: "numeric",
