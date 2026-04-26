@@ -24,7 +24,7 @@ INSERT INTO users (id, login, display_name, avatar_url) VALUES
 
 -- T-5 #1 -- Monday morning rideshare (3 days out)
 INSERT INTO missions (id, external_id, template_id, callsign, seq, title, description, visibility, status, scheduled_at, launch_site, target_orbit, vehicle, created_by)
-VALUES (1, '567613b2-c759-4fee-ac77-ac80ce4d536d', 'rideshare', 'T-5', 1, 'Monday Carpool',
+VALUES (1, '567613b2', 'rideshare', 'T-5', 1, 'Monday Carpool',
   'Coffee at Komeda before merging onto the highway. Don''t be late, we''re tracking the launch window.',
   'authenticated', 'scheduled', '2026-04-20T05:00:00Z',
   'Tsukuba — Building A Parking Lot', 'Ariake — Office Building B',
@@ -36,7 +36,7 @@ INSERT INTO mission_participants (mission_id, user_id, role) VALUES
 
 -- T-8 #4 -- Tuesday rideshare (4 days out)
 INSERT INTO missions (id, external_id, template_id, callsign, seq, title, description, visibility, status, scheduled_at, launch_site, target_orbit, vehicle, created_by)
-VALUES (2, 'daddfddc-688a-45ba-9115-32a9d92bdd57', 'rideshare', 'T-8', 4, 'Late Start Tuesday',
+VALUES (2, 'daddfddc', 'rideshare', 'T-8', 4, 'Late Start Tuesday',
   'Standard route. Booster recovery (return ride) at T+10h.',
   'authenticated', 'scheduled', '2026-04-21T08:00:00Z',
   'Tsukuba Station South Exit', 'Ariake',
@@ -48,7 +48,7 @@ INSERT INTO mission_participants (mission_id, user_id, role) VALUES
 
 -- L-12 #7 -- Lunch refueling (today!)
 INSERT INTO missions (id, external_id, template_id, callsign, seq, title, description, visibility, status, scheduled_at, launch_site, target_orbit, vehicle, created_by)
-VALUES (3, '2c077f42-7cbc-43e9-a42b-f049e429de9d', 'refueling', 'L-12', 7, 'Ramen Run',
+VALUES (3, '2c077f42', 'refueling', 'L-12', 7, 'Ramen Run',
   'New tonkotsu place opened next to the office. Reservation under "PEPEPPER/2".',
   'authenticated', 'go', '2026-04-18T12:00:00Z',
   'Office Lobby', 'Menya Hashimoto', 'Walk', 584704);
@@ -59,7 +59,7 @@ INSERT INTO mission_participants (mission_id, user_id, role) VALUES
 
 -- SPEC-002 -- Bowling night (next week, public)
 INSERT INTO missions (id, external_id, template_id, callsign, seq, title, description, visibility, status, scheduled_at, launch_site, target_orbit, vehicle, created_by)
-VALUES (4, '45cd3b5b-b1ea-4cda-bec5-6f27a0cb8c3b', 'special', 'SPEC-002', 2, 'Team Bowling Night',
+VALUES (4, '45cd3b5b', 'special', 'SPEC-002', 2, 'Team Bowling Night',
   'Quarterly team event. RSVP by Friday. Drinks after at the izakaya.',
   'public', 'scheduled', '2026-04-25T19:00:00Z',
   'Office', 'Round1 Tsukuba', 'Various', 431106);
@@ -72,7 +72,7 @@ INSERT INTO mission_participants (mission_id, user_id, role) VALUES
 
 -- SPEC-003 -- Karaoke, time TBD
 INSERT INTO missions (id, external_id, template_id, callsign, seq, title, description, visibility, status, scheduled_at, launch_site, target_orbit, vehicle, created_by)
-VALUES (5, 'c89d7fbd-50dd-49e6-a39a-794108aee795', 'special', 'SPEC-003', 3, 'Karaoke Mission',
+VALUES (5, 'c89d7fbd', 'special', 'SPEC-003', 3, 'Karaoke Mission',
   'Voting on the launch window. Lock it in by Wednesday.',
   'authenticated', 'planning', NULL,
   'Office', 'Karaoke Kan Akihabara', 'Train', 584704);
@@ -100,21 +100,21 @@ INSERT INTO schedule_votes (option_id, user_id, availability) VALUES
 -- ---------- Past missions (archive) ----------
 
 INSERT INTO missions (id, external_id, template_id, callsign, seq, title, description, visibility, status, scheduled_at, launch_site, target_orbit, vehicle, created_by)
-VALUES (6, '227a2bda-1fe1-44f8-b35f-27a3bfe5ec66', 'rideshare', 'T-5', 0, 'Wednesday Carpool',
+VALUES (6, '227a2bda', 'rideshare', 'T-5', 0, 'Wednesday Carpool',
   'Nominal mission. Coffee was hot.', 'authenticated', 'completed', '2026-04-15T05:00:00Z',
   'Tsukuba', 'Ariake', 'Honda Fit (white)', 431106);
 INSERT INTO mission_participants (mission_id, user_id, role) VALUES
   (6, 431106, 'commander'), (6, 584704, 'crew');
 
 INSERT INTO missions (id, external_id, template_id, callsign, seq, title, description, visibility, status, scheduled_at, launch_site, target_orbit, vehicle, created_by)
-VALUES (7, '6f64eb83-f06a-478d-a999-73d134e99c45', 'refueling', 'L-12', 6, 'Curry Mission',
+VALUES (7, '6f64eb83', 'refueling', 'L-12', 6, 'Curry Mission',
   'New curry place. Spicy rating: 8/10.', 'authenticated', 'completed', '2026-04-16T12:00:00Z',
   'Office', 'Tokyo Curry Lab', 'Walk', 584704);
 INSERT INTO mission_participants (mission_id, user_id, role) VALUES
   (7, 584704, 'commander'), (7, 431106, 'crew');
 
 INSERT INTO missions (id, external_id, template_id, callsign, seq, title, description, visibility, status, scheduled_at, launch_site, target_orbit, vehicle, created_by)
-VALUES (8, 'dcf2ef95-bf9d-446a-900c-2b5ded37d2a4', 'rideshare', 'T-8', 3, 'Rainy Tuesday',
+VALUES (8, 'dcf2ef95', 'rideshare', 'T-8', 3, 'Rainy Tuesday',
   'Scrubbed due to weather; rescheduled later in the week.', 'authenticated', 'scrubbed', '2026-04-14T08:00:00Z',
   'Tsukuba', 'Ariake', NULL, 584704);
 INSERT INTO mission_participants (mission_id, user_id, role) VALUES

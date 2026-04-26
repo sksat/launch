@@ -20,7 +20,7 @@ async function render(
 
 const sampleMission = (overrides: Partial<MissionRow> = {}): MissionRow => ({
 	id: 1,
-	external_id: "00000000-0000-4000-8000-000000000001",
+	external_id: "abc12345",
 	template_id: "rideshare",
 	callsign: "T-5",
 	seq: 1,

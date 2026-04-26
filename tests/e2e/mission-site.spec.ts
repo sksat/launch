@@ -22,7 +22,7 @@ test("mission form shows registered sites and mission detail links to chosen sit
 		.fill(future.toISOString().slice(0, 16));
 
 	await page.getByRole("button", { name: "Create Mission" }).click();
-	await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
+	await expect(page).toHaveURL(/\/missions\/[0-9A-Za-z]{8}$/);
 
 	// Mission detail shows the site name, linked to /sites/tsukuba-bldg-a
 	const siteLink = page.getByRole("link", {

@@ -2,6 +2,7 @@ import type { Page, APIRequestContext } from "@playwright/test";
 import { expect } from "@playwright/test";
 import { spawnSync } from "node:child_process";
 import { resolve } from "node:path";
+import { generateShortId } from "../../../src/lib/short-id";
 
 const REPO_ROOT = resolve(import.meta.dirname, "../../..");
 
@@ -86,7 +87,7 @@ export async function seedRefuelingMission(
 		.locator('input[name="target_orbit"]')
 		.fill(opts.targetOrbit ?? "Restaurant");
 	await page.getByRole("button", { name: "Create Mission" }).click();
-	await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
+	await expect(page).toHaveURL(/\/missions\/[0-9A-Za-z]{8}$/);
 }
 
 /**
@@ -125,7 +126,7 @@ export async function seedZeyoMission(
 		.selectOption({ label: "カレーうどん ZEYO." });
 	await page.locator('input[name="target_orbit"]').fill("ZEYO");
 	await page.getByRole("button", { name: "Create Mission" }).click();
-	await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
+	await expect(page).toHaveURL(/\/missions\/[0-9A-Za-z]{8}$/);
 	const url = page.url();
 	const missionId = Number(url.match(/\/missions\/(\d+)$/)![1]);
 	return { siteSlug, missionId };
@@ -157,8 +158,8 @@ export async function seedZeyoMissionSQL(opts: {
 	// helper never collides with an `L-12` created by an earlier test going
 	// through the UI. The external_id is the primary identity; callsign/seq
 	// are just there to satisfy the UNIQUE constraint.
-	const seedExternalId = crypto.randomUUID();
-	const seedCallsign = `ZEYOTEST-${seedExternalId.slice(0, 8)}`;
+	const seedExternalId = generateShortId();
+	const seedCallsign = `ZEYOTEST-${seedExternalId}`;
 	wranglerExec(
 		`INSERT INTO sites (slug, name, visibility, image_source, google_place_id, google_photo_name, google_attribution, created_by)
 		 VALUES ('${siteSlug}', 'カレーうどん ZEYO.', 'authenticated', 'google_places', 'ChIJmockPlace', 'places/ChIJmockPlace/photos/mockPhoto', 'Mock Photographer', ${uid})

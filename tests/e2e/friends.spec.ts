@@ -52,7 +52,7 @@ test.describe("friends", () => {
 		await expect(sksatCheckbox).toBeVisible();
 		await sksatCheckbox.check();
 		await page.getByRole("button", { name: "Create Mission" }).click();
-		await expect(page).toHaveURL(/\/missions\/[0-9a-f-]{36}$/);
+		await expect(page).toHaveURL(/\/missions\/[0-9A-Za-z]{8}$/);
 		const missionUrl = page.url();
 		// sksat should already be in the crew list (auto-boarded). crew-list
 		// renders the bare login (no @-prefix) inside font-mono text.
